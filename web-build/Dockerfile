@@ -1,4 +1,3 @@
-RUN npm install -g ws@8.18.1
-RUN npm link ws
-RUN npm install -g glob@11.0.2
-RUN npm link glob
+RUN mkdir -p /opt/ddev-websocket
+WORKDIR /opt/ddev-websocket
+RUN npm install ws@8.18.1 glob@11.0.2

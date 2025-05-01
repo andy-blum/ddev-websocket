@@ -1,10 +1,10 @@
 web_extra_exposed_ports:
-  - name: websockets
+  - name: websocket
     container_port: 8080
     http_port: 8081
     https_port: 8080
 
 web_extra_daemons:
-  - name: "websockets"
-    command: "node SocketServer.js"
-    directory: /var/www/html/.ddev
+  - name: websocket
+    command: "NODE_PATH=/opt/ddev-websocket/node_modules node SocketServer.js"
+    directory: /var/www/html/.ddev/js
