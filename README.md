@@ -1,7 +1,7 @@
 [![add-on registry](https://img.shields.io/badge/DDEV-Add--on_Registry-blue)](https://addons.ddev.com)
-[![tests](https://github.com/ddev/ddev-addon-template/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/ddev/ddev-addon-template/actions/workflows/tests.yml?query=branch%3Amain)
-[![last commit](https://img.shields.io/github/last-commit/ddev/ddev-addon-template)](https://github.com/ddev/ddev-addon-template/commits)
-[![release](https://img.shields.io/github/v/release/ddev/ddev-addon-template)](https://github.com/ddev/ddev-addon-template/releases/latest)
+[![tests](https://github.com/ddev/ddev-ddev-websocket/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/ddev/ddev-ddev-websocket/actions/workflows/tests.yml?query=branch%3Amain)
+[![last commit](https://img.shields.io/github/last-commit/ddev/ddev-ddev-websocket)](https://github.com/ddev/ddev-ddev-websocket/commits)
+[![release](https://img.shields.io/github/v/release/ddev/ddev-ddev-websocket)](https://github.com/ddev/ddev-ddev-websocket/releases/latest)
 
 # DDEV add-on template <!-- omit in toc -->
 
@@ -22,7 +22,7 @@ This repository is a quick way to get started. You can create a new repo from th
 
 ## Components of the repository
 
-* The fundamental contents of the add-on service or other component. For example, in this template there is a [docker-compose.addon-template.yaml](docker-compose.addon-template.yaml) file.
+* The fundamental contents of the add-on service or other component. For example, in this template there is a [docker-compose.ddev-websocket.yaml](docker-compose.ddev-websocket.yaml) file.
 * An [install.yaml](install.yaml) file that describes how to install the service or other component.
 * A test suite in [test.bats](tests/test.bats) that makes sure the service continues to work as expected.
 * [Github actions setup](.github/workflows/tests.yml) so that the tests run automatically when you push to the repository.
@@ -31,8 +31,8 @@ This repository is a quick way to get started. You can create a new repo from th
 
 1. Choose a good descriptive name for your add-on. It should probably start with "ddev-" and include the basic service or functionality. If it's particular to a specific CMS, perhaps `ddev-<CMS>-servicename`.
 2. Create the new template repository by using the template button.
-3. Globally replace "addon-template" with the name of your add-on.
-4. Add the files that need to be added to a DDEV project to the repository. For example, you might replace `docker-compose.addon-template.yaml` with the `docker-compose.*.yaml` for your recipe.
+3. Globally replace "ddev-websocket" with the name of your add-on.
+4. Add the files that need to be added to a DDEV project to the repository. For example, you might replace `docker-compose.ddev-websocket.yaml` with the `docker-compose.*.yaml` for your recipe.
 5. Update the `install.yaml` to give the necessary instructions for installing the add-on:
 
    * The fundamental line is the `project_files` directive, a list of files to be copied from this repo into the project `.ddev` directory.
