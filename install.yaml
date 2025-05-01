@@ -5,4 +5,5 @@ project_files:
   - web-build/SocketServer.js
   - config.websockets.yml
   - js/SocketClient.js
+  - js/plugins/pong.example.js
 ddev_version_constraint: '>= v1.24.3'
