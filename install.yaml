@@ -3,6 +3,7 @@ name: ddev-websocket
 project_files:
   - web-build/Dockerfile
   - config.websockets.yml
+  - js/node_modules #symlink to where we're installing packages
   - js/SocketServer.js
   - js/SocketClient.js
   - nginx_full/nginx-site.conf
