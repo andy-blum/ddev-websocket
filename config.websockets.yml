@@ -6,5 +6,5 @@ web_extra_exposed_ports:
 
 web_extra_daemons:
   - name: websocket
-    command: "NODE_PATH=/opt/ddev-websocket/node_modules node SocketServer.js"
-    directory: /var/www/html/.ddev/js
+    command: "node SocketServer.js"
+    directory: /opt/ddev-websocket
