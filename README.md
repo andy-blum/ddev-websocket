@@ -1,4 +1,4 @@
-# DDEV add-on template
+# DDEV Websocket
 
 This add-on for [DDEV](https://ddev.readthedocs.io) provides a simple, extensible websocket server. This server allows developers to send/receive messages between the browser and the server without the need for a page refresh.
 
