@@ -1,57 +1,58 @@
-[![add-on registry](https://img.shields.io/badge/DDEV-Add--on_Registry-blue)](https://addons.ddev.com)
-[![tests](https://github.com/ddev/ddev-ddev-websocket/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/ddev/ddev-ddev-websocket/actions/workflows/tests.yml?query=branch%3Amain)
-[![last commit](https://img.shields.io/github/last-commit/ddev/ddev-ddev-websocket)](https://github.com/ddev/ddev-ddev-websocket/commits)
-[![release](https://img.shields.io/github/v/release/ddev/ddev-ddev-websocket)](https://github.com/ddev/ddev-ddev-websocket/releases/latest)
+# DDEV add-on template
 
-# DDEV add-on template <!-- omit in toc -->
+This add-on for [DDEV](https://ddev.readthedocs.io) provides a simple, extensible websocket server. This server allows developers to send/receive messages between the browser and the server without the need for a page refresh.
 
-* [What is DDEV add-on template?](#what-is-ddev-add-on-template)
-* [Components of the repository](#components-of-the-repository)
-* [Getting started](#getting-started)
-* [How to debug in Github Actions](./README_DEBUG.md)
+## Installation
 
-## What is DDEV add-on template?
+To install this add-on, run the following command:
 
-This repository is a template for providing [DDEV](https://ddev.readthedocs.io) add-ons and services.
+```bash
+ddev add-on get ddev/ddev-websocket
+ddev restart
+```
 
-In DDEV, add-ons can be installed from the command line using the `ddev add-on get` command, for example, `ddev add-on get ddev/ddev-redis` or `ddev add-on get ddev/ddev-solr`.
+## Plugins
 
-This repository is a quick way to get started. You can create a new repo from this one by clicking the template button in the top right corner of the page.
+Plugins are JavaScript files that can be added to the `.ddev/js/plugins` directory. Each plugin may export functions for the following events:
 
-![template button](images/template-button.png)
+- `onConnection`: Called when a new connection is established.
+- `onMessage`: Called when a message is received from the client.
+- `onError`: Called when an error occurs.
+- `onClose`: Called when the connection is closed.
 
-## Components of the repository
+Plugins _do not_ need to implement all of these functions, all are opt-in. Each function is called with the individual connection as `this`, and the WebSocketServer instance as the first argument.
 
-* The fundamental contents of the add-on service or other component. For example, in this template there is a [docker-compose.ddev-websocket.yaml](docker-compose.ddev-websocket.yaml) file.
-* An [install.yaml](install.yaml) file that describes how to install the service or other component.
-* A test suite in [test.bats](tests/test.bats) that makes sure the service continues to work as expected.
-* [Github actions setup](.github/workflows/tests.yml) so that the tests run automatically when you push to the repository.
+A sample plugin `pong.example.js` is provided in the `.ddev/js/plugins` directory, and by default is loaded by the server on startup:
 
-## Getting started
+## Usage
 
-1. Choose a good descriptive name for your add-on. It should probably start with "ddev-" and include the basic service or functionality. If it's particular to a specific CMS, perhaps `ddev-<CMS>-servicename`.
-2. Create the new template repository by using the template button.
-3. Globally replace "ddev-websocket" with the name of your add-on.
-4. Add the files that need to be added to a DDEV project to the repository. For example, you might replace `docker-compose.ddev-websocket.yaml` with the `docker-compose.*.yaml` for your recipe.
-5. Update the `install.yaml` to give the necessary instructions for installing the add-on:
+The websocket server is available at `http://<project-name>.ddev.site:8080`, and is created using the [ws package](https://github.com/websockets/ws). Connections are initialized in the browser using the WebSocket constructor:
 
-   * The fundamental line is the `project_files` directive, a list of files to be copied from this repo into the project `.ddev` directory.
-   * You can optionally add files to the `global_files` directive as well, which will cause files to be placed in the global `.ddev` directory, `~/.ddev`.
-   * Finally, `pre_install_commands` and `post_install_commands` are supported. These can use the host-side environment variables documented [in DDEV docs](https://ddev.readthedocs.io/en/stable/users/extend/custom-commands/#environment-variables-provided).
+```javascript
+const ws = new WebSocket('wss://<project-name>.ddev.site:8080');
+```
 
-6. Update `tests/test.bats` to provide a reasonable test for your repository. Tests will run automatically on every push to the repository, and periodically each night. Please make sure to address test failures when they happen. Others will be depending on you. Bats is a testing framework that just uses Bash. To run a Bats test locally, you have to install [bats-core](https://bats-core.readthedocs.io/en/stable/installation.html) and its [libraries](https://github.com/ztombol/bats-docs) first. Then you download your add-on, and finally run `bats ./tests/test.bats` within the root of the uncompressed directory. To learn more about Bats see the [documentation](https://bats-core.readthedocs.io/en/stable/).
-7. When everything is working, including the tests, you can push the repository to GitHub.
-8. Create a [release](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) on GitHub.
-9. Test manually with `ddev add-on get <owner/repo>`.
-10. You can test PRs with `ddev add-on get https://github.com/<user>/<repo>/tarball/<branch>`.
-11. You can test add-ons locally without GitHub by downloading them, making changes and running `ddev add-on get /path/to/add-on-directory`.
-12. Update the `README.md` header, adding the machine name of the add-on, for example `# ddev-redis`, not `# DDEV Redis`.
-13. Update the `README.md` to describe the add-on, how to use it, and how to contribute. If there are any manual actions that have to be taken, please explain them. If it requires special configuration of the using project, please explain how to do those. Examples in [ddev/ddev-solr](https://github.com/ddev/ddev-solr), [ddev/ddev-memcached](https://github.com/ddev/ddev-memcached), and (advanced) [ddev-platformsh](https://github.com/ddev/ddev-platformsh).
-14. Add a good short description to your repo, and add the [topic](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics) "ddev-get". It will immediately be added to the list provided by `ddev add-on list --all`.
-15. When it has matured you will hopefully want to have it become an "official" maintained add-on. Open an issue in the [DDEV queue](https://github.com/ddev/ddev/issues) for that.
+To use the `pong` plugin, run the following command in your browser's console:
 
-Add-ons were covered in [DDEV Add-ons: Creating, maintaining, testing](https://www.youtube.com/watch?v=TmXqQe48iqE) (part of the [DDEV Contributor Live Training](https://ddev.com/blog/contributor-training)).
+```js
+const ws = new WebSocket('wss://<project-name>.ddev.site:8080');
+ws.onmessage = ({data}) => console.log(data);
+// "pong connected"
 
-Note that more advanced techniques are discussed in [Advanced Add-On Techniques](https://ddev.com/blog/advanced-add-on-contributor-training/) and [DDEV docs](https://ddev.readthedocs.io/en/stable/users/extend/additional-services/).
+ws.send('ping');
+// "pong"
 
-**Contributed and maintained by `@CONTRIBUTOR`**
+ws.send('ping all');
+// "pong"
+// (appears in all connected clients)
+
+ws.close();
+// View ddev logs
+```
+
+To view the server logs as you communicate back and forth, run the following command:
+
+```bash
+ddev logs -s websocket -f
+```
+

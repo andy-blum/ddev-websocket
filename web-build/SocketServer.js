@@ -13,21 +13,21 @@ Promise.all(pluginFiles.map(plugin => import(plugin)))
     wss.on('connection', (ws) => {
       plugins.forEach(plugin => {
         if (typeof plugin.onConnection === 'function') {
-          plugin.onConnection.call({}, ws);
+          plugin.onConnection.call(ws, wss);
         }
         if (typeof plugin.onMessage === 'function') {
           ws.on('message', (data) => {
-            plugin.onMessage.call({}, ws, data);
+            plugin.onMessage.call(ws, wss, data);
           });
         }
         if (typeof plugin.onError === 'function') {
           ws.on('error', (error) => {
-            plugin.onError.call({}, ws, error);
+            plugin.onError.call(ws, wss, error);
           });
         }
         if (typeof plugin.onClose === 'function') {
           ws.on('close', () => {
-            plugin.onClose.call({}, ws);
+            plugin.onClose.call(ws, wss);
           });
         }
       });
