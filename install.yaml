@@ -6,4 +6,5 @@ project_files:
   - config.websockets.yml
   - js/SocketClient.js
   - js/plugins/pong.example.js
+  - nginx/ddev-websocket.conf
 ddev_version_constraint: '>= v1.24.3'
