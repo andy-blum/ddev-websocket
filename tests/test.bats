@@ -52,6 +52,13 @@ health_checks() {
   assert_output --partial "FULLURL https://${PROJNAME}.ddev.site"
 }
 
+install() {
+  run ddev add-on get "${DIR}"
+  assert_success
+  run ddev restart -y
+  assert_success
+}
+
 teardown() {
   set -eu -o pipefail
   ddev delete -Oy ${PROJNAME} >/dev/null 2>&1
@@ -61,13 +68,9 @@ teardown() {
 @test "install from directory" {
   set -eu -o pipefail
   echo "# ddev add-on get ${DIR} with project ${PROJNAME} in $(pwd)" >&3
-  run ddev add-on get "${DIR}"
-  assert_success
-  run ddev restart -y
-  assert_success
+  install
   health_checks
 }
-
 # bats test_tags=release
 @test "install from release" {
   set -eu -o pipefail
@@ -77,4 +80,26 @@ teardown() {
   run ddev restart -y
   assert_success
   health_checks
+}
+
+@test "websocket server is available on port 8080" {
+  set -eu -o pipefail
+  install
+  # The -I flag fetches headers only, --http1.1 ensures HTTP/1.1 handshake, and -sS silences progress but not errors.
+  run curl -sS -o /dev/null -w "%{http_code}" -I https://${PROJNAME}.ddev.site:8080
+  # 426 is the HTTP status code for Upgrade Required, which is expected for a successful WebSocket handshake.
+  # Print our result for debugging
+  echo "Output: ${output}"
+  [[ "$output" == "426" ]]
+}
+
+@test "GET /ddev-websocket/SocketClient.js returns JavaScript" {
+  set -eu -o pipefail
+  install
+  # Use curl to fetch headers and content type
+  run curl -sS -D - https://${PROJNAME}.ddev.site/ddev-websocket/SocketClient.js -o /dev/null
+  # Check for Content-Type: application/javascript (could also be text/javascript)
+  # Print our result for debugging
+  echo "Output: ${output}"
+  [[ "$output" =~ [Cc]ontent-[Tt]ype:\ *([Aa]pplication|[Tt]ext)/javascript ]]
 }
