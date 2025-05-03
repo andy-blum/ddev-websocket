@@ -78,3 +78,19 @@ teardown() {
   assert_success
   health_checks
 }
+
+@test "websocket server is available on port 8080" {
+  set -eu -o pipefail
+  # The -I flag fetches headers only, --http1.1 ensures HTTP/1.1 handshake, and -sS silences progress but not errors.
+  run curl -sS -o /dev/null -w "%{http_code}" -I http://localhost:8080
+  # 101 is the HTTP status code for Switching Protocols, which is expected for a successful WebSocket handshake.
+  [[ "$output" == "101" ]]
+}
+
+@test "GET /ddev-websocket/SocketClient.js returns JavaScript" {
+  set -eu -o pipefail
+  # Use curl to fetch headers and content type
+  run curl -sS -D - http://localhost:8080/ddev-websocket/SocketClient.js -o /dev/null
+  # Check for Content-Type: application/javascript (could also be text/javascript)
+  [[ "$output" =~ Content-Type:\ (application|text)/javascript ]]
+}
