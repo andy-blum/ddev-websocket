@@ -8,3 +8,7 @@ web_extra_daemons:
   - name: websocket
     command: "node SocketServer.js"
     directory: /opt/ddev-websocket
+
+hooks:
+  post-start:
+    - exec: bash .ddev/websocket_patch.sh

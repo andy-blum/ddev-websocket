@@ -5,6 +5,11 @@ project_files:
   - web-build/SocketServer.js
   - config.websocket.yml
   - js/SocketClient.js
-  - js/plugins/pong.example.js
+  - js/plugins/client/ping/index.js
+  - js/plugins/client/plugins.js
+  - js/plugins/client/index.js
+  - js/plugins/server/index.js
+  - js/plugins/server/pong/index.js
   - nginx/ddev-websocket.conf
+  - websocket_patch.sh
 ddev_version_constraint: '>= v1.24.3'

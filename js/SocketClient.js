@@ -1,15 +1,24 @@
-(() => {
-  window.DDEV_WEBSOCKET = new WebSocket(`${location.origin}:8080`);
+window.DDEV_WEBSOCKET = new Promise((res, rej) => {
+  const ws = new WebSocket(`${location.origin}:8080`);
 
-  DDEV_WEBSOCKET.addEventListener('open', () => {
-    console.log('DDEV WebSocket opened');
+  ws.addEventListener('open', () => {
+    // Group ended in plugins/client/index.js
+    console.groupCollapsed("DDEV_WEBSOCKET");
+    res(ws);
   });
 
-  DDEV_WEBSOCKET.addEventListener('close', () => {
+  ws.addEventListener('message', ({data}) => {
+    if (data.startsWith('DDEV_WEBSOCKET:SERVER_PLUGIN:')) {
+      console.log(data);
+    }
+  });
+
+  ws.addEventListener('close', () => {
     console.log('DDEV WebSocket closed');
   });
 
-  DDEV_WEBSOCKET.addEventListener('error', (event) => {
+  ws.addEventListener('error', (event) => {
     console.error('DDEV WebSocket error: ', event);
+    rej(ws);
   });
-})();
+});
